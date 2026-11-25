@@ -1,4 +1,3 @@
-import "./config/env.js";
 import app from "./app.js";
 import { PORT } from "./config/env.js"
 import connectDB from "./config/db.js"
@@ -11,7 +10,7 @@ const startServer = async () => {
         })
 
     } catch (err) {
-        console.log("Failed to connect to database:", err.message);
+        console.error("Failed to connect to database:", err.message);
         process.exit(1);
     }
 };
