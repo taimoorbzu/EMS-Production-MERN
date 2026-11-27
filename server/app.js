@@ -5,6 +5,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import errorhandler from "./middlewares/error.middleware.js";
 import AppError from "./utils/AppError.js";
+import AuthRouter from './routes/auth.routes.js';
 
 //App initialization here
 const app = express();
@@ -19,6 +20,9 @@ app.use(cookieParser());
 if (NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
+
+//Mount Routes
+app.use('/api/v1/auth', AuthRouter)
 
 //Health Check
 app.get("/api/v1/health", function (req, res) {
