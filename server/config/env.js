@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-const requiredVariables = ["MONGO_URI", "PORT", "JWT_SECRET", "CLIENT_URL"];
+const requiredVariables = ["MONGO_URI", "PORT", "JWT_SECRET", "JWT_EXPIRES_IN", "CLIENT_URL", "JWT_COOKIE_EXPIRES_IN"];
 const missingVariables = requiredVariables.filter(
   (key) => !process.env[key]?.trim(),
 );
@@ -16,5 +16,5 @@ if (!/^mongodb(\+srv)?:\/\//.test(process.env.MONGO_URI)) {
   throw new Error("MONGO_URI must start with 'mongodb://' or 'mongodb+srv://'");
 }
 
-export const { NODE_ENV, PORT, MONGO_URI, CLIENT_URL, JWT_SECRET } =
+export const { NODE_ENV, PORT, MONGO_URI, CLIENT_URL, JWT_SECRET, JWT_EXPIRES_IN, JWT_COOKIE_EXPIRES_IN } =
   process.env;
