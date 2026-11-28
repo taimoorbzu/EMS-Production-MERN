@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import errorhandler from "./middlewares/error.middleware.js";
 import AppError from "./utils/AppError.js";
 import AuthRouter from './routes/auth.routes.js';
+import DepartmentRouter from './routes/department.routes.js';
 
 //App initialization here
 const app = express();
@@ -22,7 +23,8 @@ if (NODE_ENV === "development") {
 }
 
 //Mount Routes
-app.use('/api/v1/auth', AuthRouter)
+app.use('/api/v1/auth', AuthRouter);
+app.use('/api/v1/departments', DepartmentRouter);
 
 //Health Check
 app.get("/api/v1/health", function (req, res) {
