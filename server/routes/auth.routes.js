@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { login, logOut, getMe, updatePassword } from "../controllers/auth.controller.js";
 import { protect } from "../middlewares/auth.middleware.js";
-import restrictTo from "../middlewares/rbac.middleware.js";
+// import restrictTo from "../middlewares/rbac.middleware.js";
 const router = Router();
 
 
