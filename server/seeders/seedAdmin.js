@@ -1,33 +1,51 @@
 import mongoose from "mongoose";
-import { MONGO_URI } from "../config/env.js";
+import { MONGO_URI, ADMIN_EMAIL, ADMIN_PASSWORD, NODE_ENV } from "../config/env.js";
 import User from "../models/User.model.js";
 
 const seedAdmin = async function () {
     try {
-        // 1. Connect to MongoDB
-        await mongoose.connect(MONGO_URI);
+        const isProduction = NODE_ENV === "production";
 
+        const adminEmail = ADMIN_EMAIL ||
+            (!isProduction ? "admin@example.com" : null);
+
+        const adminPassword = ADMIN_PASSWORD ||
+            (!isProduction ? "Admin@123456" : null);
+
+        if (!adminEmail || !adminPassword) {
+            throw new Error(
+                "Production seeding requires ADMIN_EMAIL and ADMIN_PASSWORD environment variables"
+            );
+        }
+
+        if (adminPassword.length < 8) {
+            throw new Error("Admin password must be at least 8 characters");
+        }
+
+        // 2. Connect to MongoDB
+        await mongoose.connect(MONGO_URI);
         console.log("MongoDB connected successfully");
 
-        // 2. Check if admin already exists
+        // 3. Check whether admin already exists
         const existingAdmin = await User.findOne({
-            email: "admin@example.com"
+            email: adminEmail.toLowerCase().trim()
         });
 
         if (existingAdmin) {
-            console.log("Admin user already exists");
+            console.log("Admin user already exists. Skipping seeding.");
             return;
         }
 
-        // 3. Create admin user
+        // 4. Create admin
         const admin = await User.create({
-            email: "admin@example.com",
-            passwordHash: "admin@123456",
+            email: adminEmail,
+            passwordHash: adminPassword,
             role: "admin",
             isActive: true
         });
 
         console.log("Admin user created successfully!");
+
         console.log({
             id: admin._id,
             email: admin.email,
@@ -35,12 +53,21 @@ const seedAdmin = async function () {
         });
 
     } catch (error) {
-        console.error("Seeding failed:", error.message);
-        process.exitCode = 1;
+
+        // 5. Handle duplicate-key race condition
+        if (error.code === 11000) {
+            console.log("Admin already exists. Skipping seeding.");
+        } else {
+            console.error("Seeding failed:", error.message);
+            process.exitCode = 1;
+        }
 
     } finally {
-        // 4. Close database connection
-        await mongoose.connection.close();
+        // 6. Always close database connection
+        if (mongoose.connection.readyState !== 0) {
+            await mongoose.connection.close();
+            console.log("MongoDB connection closed");
+        }
     }
 };
 

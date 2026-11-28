@@ -16,5 +16,5 @@ if (!/^mongodb(\+srv)?:\/\//.test(process.env.MONGO_URI)) {
   throw new Error("MONGO_URI must start with 'mongodb://' or 'mongodb+srv://'");
 }
 
-export const { NODE_ENV, PORT, MONGO_URI, CLIENT_URL, JWT_SECRET, JWT_EXPIRES_IN, JWT_COOKIE_EXPIRES_IN } =
+export const { NODE_ENV, PORT, MONGO_URI, CLIENT_URL, JWT_SECRET, JWT_EXPIRES_IN, JWT_COOKIE_EXPIRES_IN, ADMIN_EMAIL, ADMIN_PASSWORD } =
   process.env;
